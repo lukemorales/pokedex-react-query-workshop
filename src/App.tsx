@@ -1,11 +1,13 @@
 import React from 'react';
 
-function App() {
-  return (
-    <header>
-      <h1>Pokedex</h1>
-    </header>
-  );
-}
+import { BrowserRouter } from 'react-router-dom';
+
+import Routes from './routes';
+
+const App = () => (
+  <BrowserRouter>
+    <Routes />
+  </BrowserRouter>
+);
 
 export default App;
