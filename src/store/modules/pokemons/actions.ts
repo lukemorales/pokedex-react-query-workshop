@@ -1,13 +1,15 @@
+/* eslint @typescript-eslint/no-inferrable-types: 0 */
 import { createAction } from 'typesafe-actions';
 
+import { POKEAPI_URL } from '../../../constants';
 import { APIListResult } from './types';
 
 export const getPokemonsRequest = createAction(
   '@pokemon/GET_POKEMONS_REQUEST',
-  (offset: number) => ({
-    offset,
+  (url: string = POKEAPI_URL) => ({
+    url,
   }),
-)<{ offset: number }>();
+)<{ url: string }>();
 
 export const getPokemonsSuccess = createAction(
   '@pokemon/GET_POKEMONS_SUCCESS',

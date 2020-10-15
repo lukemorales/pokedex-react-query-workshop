@@ -1,16 +1,16 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects';
 import { ActionType, getType } from 'typesafe-actions';
+import axios from 'axios';
 
 import * as actions from './actions';
-import api from '../../../services/api';
 
-export function* getPokemonsRequest({
+function* getPokemonsRequest({
   payload,
 }: ActionType<typeof actions.getPokemonsRequest>) {
   try {
-    const { offset } = payload;
+    const { url } = payload;
 
-    const { data } = yield call(api.get, '', { params: { offset, limit: 20 } });
+    const { data } = yield call(axios.get, url);
 
     yield put(actions.getPokemonsSuccess(data));
   } catch (err) {

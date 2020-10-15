@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+import { POKEAPI_URL } from '../constants';
+
 export default axios.create({
-  baseURL: 'https://pokeapi.co/api/v2/pokemon',
+  baseURL: POKEAPI_URL.split('?')[0],
 });

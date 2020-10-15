@@ -13,13 +13,13 @@ export interface PokemonListState {
   readonly loading: boolean;
   readonly count: number;
   readonly next: string;
-  readonly previous: string | null;
+  readonly previous: string | undefined;
   readonly pokemons: PokemonLink[];
 }
 
 export type APIListResult = {
   count: number;
   next: string;
-  previous: null;
+  previous: string | undefined;
   results: PokemonLink[];
 };

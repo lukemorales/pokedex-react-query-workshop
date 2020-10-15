@@ -1,11 +1,15 @@
 import React from 'react';
 
-function App() {
-  return (
-    <header>
-      <h1>Pokedex</h1>
-    </header>
-  );
-}
+import { BrowserRouter } from 'react-router-dom';
+
+import Routes from './routes';
+import GlobalStyles from './styles';
+
+const App = () => (
+  <BrowserRouter>
+    <Routes />
+    <GlobalStyles />
+  </BrowserRouter>
+);
 
 export default App;
