@@ -1,3 +1,5 @@
+import { POKEMON_TYPE_COLORS } from '../../constants';
+
 export interface Pokemon {
   abilities: Ability[];
   base_experience: number;
@@ -25,7 +27,7 @@ export interface Ability {
 }
 
 export interface Species {
-  name: string;
+  name: keyof typeof POKEMON_TYPE_COLORS;
   url: string;
 }
 
