@@ -2,11 +2,13 @@ import React, { useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import Skeleton from 'react-loading-skeleton';
 
 import { StoreState } from '../../store/createStore';
 import { getPokemonsRequest } from '../../store/modules/pokemons/actions';
 import { getPokemonImage } from '../../utils';
-import { Container } from './styles';
+import * as S from './styles';
+import { PokemonLogo } from '../../assets/images';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -24,44 +26,56 @@ const Home = () => {
     }
   }, [dispatch, pokemons.length]);
 
-  if (loading) {
-    return <h2>loading...</h2>;
-  }
   return (
-    <>
-      <header>
-        <h1>Pokedex</h1>
-        <span>{count} pokemons</span>
-      </header>
-      <ul>
-        {pokemons.map((pokemon) => {
-          const { url, name } = pokemon;
+    <S.Container>
+      <S.Header>
+        <h1>
+          <PokemonLogo />
+        </h1>
+        <span>{count} Pokémons</span>
+      </S.Header>
+      <S.Main>
+        <ul>
+          {loading
+            ? Array.from(Array(16).keys()).map((key) => {
+                return (
+                  <S.PokeCard key={`skeleton-${key}`}>
+                    <div>
+                      <Skeleton circle height={80} width={80} />
+                      <Skeleton width={60} />
+                    </div>
+                  </S.PokeCard>
+                );
+              })
+            : pokemons.map((pokemon) => {
+                const { url, name } = pokemon;
 
-          const [, id] = url.split('pokemon/');
+                const [, id] = url.split('pokemon/');
 
-          return (
-            <li key={url} data-api-url={url}>
-              <img src={getPokemonImage(name)} alt={name} />
-              <Link to={`/pokemon/${id}`}>{name}</Link>
-            </li>
-          );
-        })}
-      </ul>
-      <footer>
-        <nav>
+                return (
+                  <S.PokeCard key={url}>
+                    <Link to={`/pokemon/${id}`}>
+                      <img src={getPokemonImage(name)} alt={name} />
+                      <span>{name}</span>
+                    </Link>
+                  </S.PokeCard>
+                );
+              })}
+        </ul>
+        <S.Navigation>
           <button
-            onClick={getPreviousPokemons}
             type="button"
+            onClick={getPreviousPokemons}
             disabled={!previous}
           >
-            Anterior
+            Previous
           </button>
           <button onClick={getNextPokemons} type="button" disabled={!next}>
-            Próxima
+            Next
           </button>
-        </nav>
-      </footer>
-    </>
+        </S.Navigation>
+      </S.Main>
+    </S.Container>
   );
 };
 
