@@ -1,33 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { useHistory, useParams } from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
 import { IoMdArrowBack } from 'react-icons/io';
 
-import { Pokemon } from './types';
-import api from '../../services/api';
 import * as S from './styles';
+import { Pokemon } from './types';
 import { POKEMON_TYPE_COLORS } from '../../constants';
+import usePokemon from '../../hooks/usePokemon';
 
 const PokemonPage = () => {
-  const [loading, setLoading] = useState(true);
-  const [pokemon, setPokemon] = useState<Pokemon>({} as Pokemon);
-  const { pokemonId } = useParams<{ pokemonId: string }>();
-
   const history = useHistory();
+  const { pokemonId } = useParams<{ pokemonId: string }>();
+  const { isFetching, data } = usePokemon(pokemonId);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await api.get(`/${pokemonId}`);
-        setPokemon(data);
-      } catch (err) {
-        console.log({ err });
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [pokemonId]);
+  const pokemon = data ?? ({} as Pokemon);
 
   return (
     <S.Container>
@@ -35,7 +22,7 @@ const PokemonPage = () => {
         <button type="button" onClick={() => history.push('/')}>
           <IoMdArrowBack color="#fff" />
         </button>
-        {loading ? (
+        {isFetching ? (
           <>
             <Skeleton
               circle
@@ -76,14 +63,6 @@ const PokemonPage = () => {
                   </tr>
                 ))}
               </table>
-
-              {/* <ul>
-            <li>
-              {pokemon.abilities.map(({ ability }) => (
-                <li>{ability.name}</li>
-              ))}
-            </li>
-          </ul> */}
             </S.PokeStats>
             <S.PokeFooter
               color={POKEMON_TYPE_COLORS[pokemon.types[0].type.name]}

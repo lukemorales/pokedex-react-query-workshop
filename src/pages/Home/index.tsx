@@ -1,30 +1,23 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 
-import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
 
-import { StoreState } from '../../store/createStore';
-import { getPokemonsRequest } from '../../store/modules/pokemons/actions';
-import { getPokemonImage } from '../../utils';
 import * as S from './styles';
 import { PokemonLogo } from '../../assets/images';
+import { POKEAPI_URL } from '../../constants';
+import usePaginatedPokemons from '../../hooks/usePaginatedPokemon';
+import { APIListResult } from '../../common/types';
 
 const Home = () => {
-  const dispatch = useDispatch();
+  const [currentURL, setCurrentURL] = useState(POKEAPI_URL);
+  const { isFetching, resolvedData } = usePaginatedPokemons(currentURL);
 
-  const { loading, pokemons, count, next, previous } = useSelector(
-    (state: StoreState) => state.pokemons,
-  );
+  const { count, next, previous, results: pokemons } =
+    resolvedData ?? ({} as APIListResult);
 
-  const getPreviousPokemons = () => dispatch(getPokemonsRequest(previous));
-  const getNextPokemons = () => dispatch(getPokemonsRequest(next));
-
-  useEffect(() => {
-    if (!pokemons.length) {
-      dispatch(getPokemonsRequest());
-    }
-  }, [dispatch, pokemons.length]);
+  const setPreviousPage = () => previous && setCurrentURL(previous);
+  const setNextPage = () => next && setCurrentURL(next);
 
   return (
     <S.Container>
@@ -36,7 +29,7 @@ const Home = () => {
       </S.Header>
       <S.Main>
         <ul>
-          {loading
+          {isFetching
             ? Array.from(Array(16).keys()).map((key) => {
                 return (
                   <S.PokeCard key={`skeleton-${key}`}>
@@ -47,15 +40,15 @@ const Home = () => {
                   </S.PokeCard>
                 );
               })
-            : pokemons.map((pokemon) => {
-                const { url, name } = pokemon;
+            : pokemons?.map((pokemon) => {
+                const { url, name, image } = pokemon;
 
                 const [, id] = url.split('pokemon/');
 
                 return (
                   <S.PokeCard key={url}>
                     <Link to={`/pokemon/${id}`}>
-                      <img src={getPokemonImage(name)} alt={name} />
+                      <img src={image} alt={name} />
                       <span>{name}</span>
                     </Link>
                   </S.PokeCard>
@@ -63,14 +56,10 @@ const Home = () => {
               })}
         </ul>
         <S.Navigation>
-          <button
-            type="button"
-            onClick={getPreviousPokemons}
-            disabled={!previous}
-          >
+          <button type="button" onClick={setPreviousPage} disabled={!previous}>
             Previous
           </button>
-          <button onClick={getNextPokemons} type="button" disabled={!next}>
+          <button onClick={setNextPage} type="button" disabled={!next}>
             Next
           </button>
         </S.Navigation>
