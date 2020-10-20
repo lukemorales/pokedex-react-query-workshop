@@ -1,23 +1,23 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { Link } from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
 
 import * as S from './styles';
 import { PokemonLogo } from '../../assets/images';
-import { POKEAPI_URL } from '../../constants';
-import usePaginatedPokemons from '../../hooks/usePaginatedPokemon';
+import usePaginatedPokemons from '../../hooks/usePaginatedPokemons';
 import { APIListResult } from '../../common/types';
+import usePokedex from '../../contexts/pokedex';
 
 const Home = () => {
-  const [currentURL, setCurrentURL] = useState(POKEAPI_URL);
-  const { isFetching, resolvedData } = usePaginatedPokemons(currentURL);
+  const { currentUrl: currentPokedexUrl, setPokedexPage } = usePokedex();
+  const { isFetching, resolvedData } = usePaginatedPokemons(currentPokedexUrl);
 
   const { count, next, previous, results: pokemons } =
     resolvedData ?? ({} as APIListResult);
 
-  const setPreviousPage = () => previous && setCurrentURL(previous);
-  const setNextPage = () => next && setCurrentURL(next);
+  const setPreviousPage = () => previous && setPokedexPage(previous);
+  const setNextPage = () => next && setPokedexPage(next);
 
   return (
     <S.Container>

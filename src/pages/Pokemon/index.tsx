@@ -56,12 +56,14 @@ const PokemonPage = () => {
               </ul>
 
               <table>
-                {pokemon.stats.map((stat) => (
-                  <tr key={stat.stat.name}>
-                    <td>{stat.stat.name}</td>
-                    <td>{stat.base_stat}</td>
-                  </tr>
-                ))}
+                <tbody>
+                  {pokemon.stats.map((stat) => (
+                    <tr key={stat.stat.name}>
+                      <td>{stat.stat.name}</td>
+                      <td>{stat.base_stat}</td>
+                    </tr>
+                  ))}
+                </tbody>
               </table>
             </S.PokeStats>
             <S.PokeFooter
